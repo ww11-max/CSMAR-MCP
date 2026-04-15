@@ -1,0 +1,135 @@
+
+===== PAGE 1 =====
+IntroductionCSMARChina Stock  Market & Accounting Research Database●us.gtadata.com●
+
+===== PAGE 2 =====
+Sign In & RegisterClick[Login]or[Register][Sign In]
+• Within IP authentication, the user can go access to single table query and no need to register.
+• If the users go access to cross-table, please register using your email for verification[Register]Please user your email to registerNotice:
+
+===== PAGE 3 =====
+Home[What is New]Provide latest information on more products Scan [QR Code] on WeChat for more product information and data co
+
+===== PAGE 4 =====
+Get Data -Data Query[Database Series List]Slide up and downthe left scroll bar to select data series [ Sub Database List]Slid
+
+===== PAGE 5 =====
+Get Data -Data Query[Slide up and down] in the left scroll bar or directly search for the keywords to select the [ data series]–[
+
+===== PAGE 6 =====
+Support[Contact Us] Contact us via email or phone.[Guide]Provide demonstration according to specific functions, which facilitates use
+
+===== PAGE 7 =====
+Support-Customized DataAfter filling in relevant information about the customization requirements, please click [Submit My Re
+
+===== PAGE 8 =====
+Thank youCSMARChina Stock  Market & Accounting Research Database
+
+========python接口文档===============
+一. 功能介绍
+CSMAR-PYTHON 是基于Python语言的数据接口（目前仅支持Windows系统），以函数调用的形式实现CSMAR经济金融研究数据库数据查询、下载等功能，方便用户在进行数据分析、实证研究时高效获取CSMAR数据，仅限个人注册账号使用。
+
+二. 初始配置
+1. 安装python3.6.X工具【压缩包】，并安装类库urllib3，websocket，websocket_client，pandas
+pip install urllib3
+pip install websocket
+pip install websocket_client
+pip install pandas
+2. CSMAR-PYTHON安装方式
+下载CSMAR-PYTHON【压缩包】
+解压至python安装目录下的\Lib\site-packages
+如:\Programs\Python36\Lib\site-packages
+
+系统中所有的函数返回数据格式默认都是json，可以通过列表打印类库(prettytable)来格式化数据以便查看
+pip install prettytable
+三. 使用CSMAR-PYTHON
+1. 使用CSMAR-PYTHON
+from csmarapi.CsmarService import CsmarService
+csmar = CsmarService()
+如果需要以表格形式展示数据，则需添加
+
+from csmarapi.ReportUtil import ReportUtil
+2. 函数详细介绍
+2.1 用户登录函数：login(account,pwd,lang)
+login(account,pwd,lang)
+account：用户名/已验证电话/已验证邮箱（仅限个人注册账号）
+pwd：密码
+lang：可选参数（0或1：0代表中文，1代表英文，默认为0）
+#例：
+#csmar.login('134******83', 'a*****c','1')
+csmar.login('134******83', 'a*****c')
+2.2 查看已购买的数据库名称：getListDbs()
+#例：
+database = csmar.getListDbs()
+ReportUtil(database)
+2.3 查看已购买的数据表名称：getListTables(databaseName)
+databaseName：数据库名称，可通过getListDbs()获得
+#例：
+tables = csmar.getListTables('财务报表')
+ReportUtil(tables)
+2.4 查看已购买数据表中所有的字段：getListFields(tableName)
+tableName：表名称，可通过getListTables(databaseName)获得
+#例：
+fields = csmar.getListFields('FS_Combas')
+ReportUtil(fields)
+2.5 预览数据函数：preview(tableName)
+tableName：表名称，可通过getListTables(databaseName)获得
+#例：
+data = csmar.preview('FS_Combas')
+ReportUtil(data)
+2.6 查询已购买的数据表记录条数：queryCount(columns,condition,tableName,startTime,endTime)
+columns：字段的列表，如：  ['Stkcd','ShortName','Accper','Typrep','A001000000']
+condition：条件，类似SQL条件语句，如："Stkcd='000001'"， 但不支持order by(该函数已有默认的排序方式)
+tableName：表名称，可通过getListTables(databaseName)查看
+startTime和endTime：时间关键字参数(非必填，如需填写格式为：YYYY-MM-DD):下载数据时间区间的开始时间和结束时间
+#例：
+csmar.queryCount( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas')
+#csmar.queryCount( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas' ,'2010-01-01','2019-12-31')
+2.7 查询已购买的数据表数据
+      返回json数据格式：query(columns,condition,tableName,startTime,endTime)
+      返回DataFrame数据格式：query_df(columns,condition,tableName,startTime,endTime)
+一次最多只能加载200,000条记录
+columns：字段的列表，如：  ['Stkcd','ShortName','Accper','Typrep','A001000000']
+condition：条件，类似SQL条件语句，如："Stkcd='000001'"， 但不支持order by(该函数已有默认的排序方式)
+如超过20万记录的数据可使用limit进行分页查询,假设是40万条，需分两次进行条件设置
+
+如：第一次："Stkcd like'3%' limit 0,200000"， 第二次："Stkcd like'3%' limit 200000,200000"
+
+tableName：表名称，可通过getListTables(databaseName)查看
+startTime和endTime：时间关键字参数(非必填，如需填写格式为：YYYY-MM-DD):下载数据时间区间的开始时间和结束时间
+同个查询条件30分钟内只允许执行一次，查询条件涉及到的参数是condition，startTime，endTime
+#例1：
+data = csmar.query( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas')
+#data = csmar.query( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas','2010-01-01','2019-12-31')
+ReportUtil(data)
+#例2：
+data = csmar.query_df( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas')
+#data = csmar.query_df( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas','2010-01-01','2019-12-31')
+print(data)
+2.8 下载数据函数并获取打包结果函数：getPackResultExt(columns, condition, tableName, startTime,endTime)
+columns：字段的列表，如：  ['Stkcd','ShortName','Accper','Typrep','A001000000']
+condition：条件，类似SQL条件语句，如："Stkcd='000001'"， 但不支持order by(该函数已有默认的排序方式)
+tableName：表名称，可通过getListTables(databaseName)查看
+startTime和endTime：时间关键字参数(非必填，如需填写格式为：YYYY-MM-DD):下载数据时间区间的开始时间和结束时间
+同个查询条件30分钟内只允许执行一次，查询条件涉及到的参数是condition，startTime，endTime
+#例：
+csmar.getPackResultExt( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas')
+#csmar.getPackResultExt( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%'", 'FS_Combas' ,'2010-01-01','2019-12-31')
+2.9 解压下载的数据包函数：unzipSingle(filePath)，压缩包路径为C:\csmardata\zip\xxx.zip
+filePath：压缩包的绝对路径
+#例：
+csmar.unzipSingle('c:\\csmardata\\zip\\778639194952077312.zip')
+2.10 加载文件数据函数：loadData(filePath,count)
+filePath：文件的绝对路径(解压后的文件一般在C:\csmardata\xxx路径下 其中xxx是指下载数据包的名称)
+count：加载数据的记录条数，非必填参数
+#例：
+csmar.loadData('c:\\csmardata\\778639194952077312\\FS_Combas.csv')
+四. 示例
+1. 简单查询已购买数据表的内容
+from csmarapi.CsmarService import CsmarService
+from csmarapi.ReportUtil import ReportUtil
+csmar = CsmarService()
+csmar.login('134******83', 'a*****c')
+data = csmar.query_df( ['Stkcd','ShortName','Accper','Typrep','A001000000'], "Stkcd like'3%' and Typrep='A'", 'FS_Combas','2018-01-01','2019-12-31')
+print(data)
+
