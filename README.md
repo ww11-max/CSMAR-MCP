@@ -110,10 +110,12 @@ CSMAR_LANG=0  # 0=中文, 1=英文
 
 配置env文件之后，修改Claude Code MCP配置
 VSCode 中 Claude Code 的 MCP 配置文件在：
+```json
 %APPDATA%/Code/User/globalStorage/saoudval.claude-code/mcp.json
-
+```
 或者在 VSCode 设置中搜索 MCP，找到 MCP Servers 配置入口
 添加配置：
+```json
 {
   "mcpServers": {
     "csmar": {
@@ -128,7 +130,7 @@ VSCode 中 Claude Code 的 MCP 配置文件在：
     }
   }
 }
-
+```
 ### 5. 重启 Claude Code
 
 重启 Claude Code 以加载 MCP 服务器。
