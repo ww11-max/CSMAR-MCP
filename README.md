@@ -108,9 +108,10 @@ CSMAR_LANG=0  # 0=中文, 1=英文
 ```
 如果用户使用的是VS code中的Claude code扩展，配置方式如下：
 
+
 配置env文件之后，修改Claude Code MCP配置
 VSCode 中 Claude Code 的 MCP 配置文件在：
-```json
+```code
 %APPDATA%/Code/User/globalStorage/saoudval.claude-code/mcp.json
 ```
 或者在 VSCode 设置中搜索 MCP，找到 MCP Servers 配置入口
@@ -120,7 +121,7 @@ VSCode 中 Claude Code 的 MCP 配置文件在：
   "mcpServers": {
     "csmar": {
       "command": "node",
-      "args": ["C:\\path\\to\\Csmar-MCP-server\\src\\index.js"],###引号内替换为你实际克隆项目的路径
+      "args": ["C:\\path\\to\\Csmar-MCP-server\\src\\index.js"],
       "env": {
         "CSMAR_API_BASE": "https://api.gtarsc.com",
         "CSMAR_USERNAME": "你的CSMAR用户名",
@@ -131,6 +132,7 @@ VSCode 中 Claude Code 的 MCP 配置文件在：
   }
 }
 ```
+⚠️ 路径需替换为你实际克隆的项目路径，例如 D:\\Projects\\Csmar-MCP-server\\src\\index.js
 ### 5. 重启 Claude Code
 
 重启 Claude Code 以加载 MCP 服务器。
